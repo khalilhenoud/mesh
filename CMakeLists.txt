@@ -27,8 +27,13 @@ if (NOT HAS_STANDALONE_PREDECESSOR)
     message(FATAL_ERROR "The library submdule was not downloaded!")
   endif()
 
+  if (NOT EXISTS "${PROJECT_SOURCE_DIR}/external/math/CMakeLists.txt")
+    message(FATAL_ERROR "The math submdule was not downloaded!")
+  endif()
+
   #add the subdirectory
   add_subdirectory(external/library library)
+  add_subdirectory(external/math math)
 endif()
 
 add_subdirectory(mesh)
