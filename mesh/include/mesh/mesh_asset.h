@@ -58,7 +58,7 @@ struct mesh_asset_t {
   cvector_t normals;            // float
   cvector_t uvs;                // float
   cvector_t indices;            // uint32_t
-  cvector_t materials;          // asset_ref_t
+  cvector_t materials;          // asset_ref_t (material asset or bulk variant)
 } mesh_asset_t;
 
 MESH_API
