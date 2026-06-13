@@ -189,7 +189,7 @@ bulk_mesh_asset_type_get_assets(const void *src, const asset_ref_t *refs[])
   {
     const bulk_mesh_asset_t *bulk = src;
     const mesh_asset_t *mesh = NULL;
-    uint32_t total = 0, i = 0, j = 0;
+    uint32_t total = 0;
     for (uint32_t i = 0; i < bulk->meshes.size; ++i) {
       mesh = cvector_as_c(&bulk->meshes, i, mesh_asset_t);
       mesh_asset_type_get_assets(mesh, refs + total);
