@@ -5,6 +5,7 @@ project(mesh VERSION 1.0)
 add_library(${PROJECT_NAME} SHARED
         ./source/bulk_mesh_asset.c
         ./source/mesh_asset.c
+        ./source/mesh_asset_utils.c
         ./source/skinned_mesh_asset.c
         ./include/mesh/internal/module.h
         )
