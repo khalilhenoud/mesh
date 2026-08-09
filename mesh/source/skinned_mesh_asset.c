@@ -178,10 +178,11 @@ skinned_mesh_asset_loader(
 
   {
     skinned_mesh_asset_t **ptr = (skinned_mesh_asset_t **)ptr_addr;
-    skinned_mesh_asset_t *asset_ptr = *ptr;
+    skinned_mesh_asset_t *asset_ptr = NULL;
     binary_stream_t *stream = binary_stream_from_file(
       asset_ref->path.str, allocator);
     *ptr = allocator->mem_alloc(sizeof(skinned_mesh_asset_t));
+    asset_ptr = *ptr;
     skinned_mesh_asset_def(asset_ptr);
     skinned_mesh_asset_deserialize(asset_ptr, allocator, stream);
     binary_stream_cleanup(stream);
