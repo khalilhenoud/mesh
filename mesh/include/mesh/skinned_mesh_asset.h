@@ -18,6 +18,7 @@ extern "C" {
 #include <stdint.h>
 #include <mesh/internal/module.h>
 #include <mesh/mesh_asset.h>
+#include <library/asset/asset_ref.h>
 #include <library/asset/types.h>
 #include <library/containers/cvector.h>
 #include <library/string/cstring.h>
@@ -62,15 +63,23 @@ struct bone_id_weight_t {
   float weight[8];
 } bone_id_weight_t;
 
+// tool only: used to populate the final skinned_mesh->vertex_to_bones
+typedef
+struct bone_vertex_weight_t {
+  uint32_t vertex_id;
+  float weight;
+} bone_vertex_weight_t;
+
 typedef
 struct skinned_mesh_bone_t {
   cstring_t name;
   matrix4f offset_matrix;       // mesh to bone local space
+  cvector_t vertex_weights;     // tool only.
 } skinned_mesh_bone_t;
 
 typedef
 struct skinned_mesh_asset_t {
-  mesh_asset_t mesh;
+  asset_ref_t mesh;
   cvector_t bones;             // skinned_mesh_bone_t
   cvector_t vertex_to_bones;   // bone_id_weight_t
 } skinned_mesh_asset_t;

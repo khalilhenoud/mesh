@@ -12,7 +12,6 @@
 #include <string.h>
 #include <mesh/skinned_mesh_asset.h>
 #include <library/allocator/allocator.h>
-#include <library/asset/asset_ref.h>
 #include <library/core/core.h>
 #include <library/type_registry/type_registry.h>
 
@@ -54,6 +53,7 @@ skinned_mesh_bone_serialize(
     const skinned_mesh_bone_t *bone = (const skinned_mesh_bone_t *)src;
     cstring_serialize(&bone->name, stream);
     binary_stream_write(stream, &bone->offset_matrix, sizeof(matrix4f));
+    cstring_serialize(&bone->vertex_weights, stream);
   }
 }
 
@@ -67,7 +67,7 @@ skinned_mesh_asset_serialize(
   {
     const skinned_mesh_asset_t *skinned_mesh =
       (const skinned_mesh_asset_t *)src;
-    mesh_asset_serialize(&skinned_mesh->mesh, stream);
+    asset_ref_serialize(&skinned_mesh->mesh, stream);
     cvector_serialize_func(
       &skinned_mesh->bones, stream, skinned_mesh_bone_serialize);
     cvector_serialize(&skinned_mesh->vertex_to_bones, stream);
@@ -89,6 +89,7 @@ skinned_mesh_bone_deserialize(
     cstring_def(&bone->name);
     cstring_deserialize(&bone->name, allocator, stream);
     binary_stream_read(stream, (uint8_t *)&bone->offset_matrix, s_m4, s_m4);
+    cvector_deserialize(&bone->vertex_weights, allocator, stream);
   }
 }
 
@@ -102,7 +103,7 @@ skinned_mesh_asset_deserialize(
 
   {
     skinned_mesh_asset_t *skinned_mesh = (skinned_mesh_asset_t *)dst;
-    mesh_asset_deserialize(&skinned_mesh->mesh, allocator, stream);
+    asset_ref_deserialize(&skinned_mesh->mesh, allocator, stream);
     cvector_deserialize_func(
       &skinned_mesh->bones, allocator, stream, skinned_mesh_bone_deserialize);
     cvector_deserialize(&skinned_mesh->vertex_to_bones, allocator, stream);
@@ -139,6 +140,7 @@ skinned_mesh_bone_cleanup(
     skinned_mesh_bone_t *bone = (skinned_mesh_bone_t *)ptr;
     cstring_cleanup2(&bone->name);
     memset(bone, 0, sizeof(skinned_mesh_bone_t));
+    cvector_cleanup2(&bone->vertex_weights);
   }
 }
 
@@ -152,7 +154,7 @@ skinned_mesh_asset_cleanup(
 
   {
     skinned_mesh_asset_t *skinned_mesh = (skinned_mesh_asset_t *)ptr;
-    mesh_asset_cleanup(&skinned_mesh->mesh, allocator);
+    asset_ref_cleanup(&skinned_mesh->mesh, allocator);
     cvector_cleanup_func(&skinned_mesh->bones, NULL, skinned_mesh_bone_cleanup);
     cvector_cleanup2(&skinned_mesh->vertex_to_bones);
     memset(skinned_mesh, 0, sizeof(skinned_mesh_asset_t));
@@ -224,14 +226,7 @@ skinned_mesh_asset_get_deloader(void)
 uint32_t
 skinned_mesh_asset_type_asset_count(const void *src)
 {
-  assert(src);
-
-  {
-    const skinned_mesh_asset_t *skinned_mesh = src;
-    return mesh_asset_type_asset_count(&skinned_mesh->mesh);
-  }
-
-  return 0;
+  return 1;
 }
 
 void
@@ -241,7 +236,7 @@ skinned_mesh_asset_type_get_assets(const void *src, const asset_ref_t *refs[])
 
   {
     const skinned_mesh_asset_t *skinned_mesh = src;
-    mesh_asset_type_get_assets(&skinned_mesh->mesh, refs);
+    refs[0] = &skinned_mesh->mesh;
   }
 }
 
