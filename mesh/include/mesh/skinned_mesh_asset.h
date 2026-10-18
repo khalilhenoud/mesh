@@ -63,6 +63,7 @@ struct bone_id_weight_t {
   float weight[8];
 } bone_id_weight_t;
 
+// TODO(@khalil): strip this data, this is not needed at runtime.
 // tool only: used to populate the final skinned_mesh->vertex_to_bones
 typedef
 struct bone_vertex_weight_t {
@@ -74,7 +75,7 @@ typedef
 struct skinned_mesh_bone_t {
   cstring_t name;
   matrix4f offset_matrix;       // mesh to bone local space
-  cvector_t vertex_weights;     // tool only.
+  cvector_t vertex_weights;     // tool only: bone_vertex_weight_t
 } skinned_mesh_bone_t;
 
 typedef
