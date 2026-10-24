@@ -53,7 +53,7 @@ skinned_mesh_bone_serialize(
     const skinned_mesh_bone_t *bone = (const skinned_mesh_bone_t *)src;
     cstring_serialize(&bone->name, stream);
     binary_stream_write(stream, &bone->offset_matrix, sizeof(matrix4f));
-    cstring_serialize(&bone->vertex_weights, stream);
+    cvector_serialize(&bone->vertex_weights, stream);
   }
 }
 
@@ -139,8 +139,8 @@ skinned_mesh_bone_cleanup(
   {
     skinned_mesh_bone_t *bone = (skinned_mesh_bone_t *)ptr;
     cstring_cleanup2(&bone->name);
-    memset(bone, 0, sizeof(skinned_mesh_bone_t));
     cvector_cleanup2(&bone->vertex_weights);
+    memset(bone, 0, sizeof(skinned_mesh_bone_t));
   }
 }
 
